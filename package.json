@@ -1,0 +1,9 @@
+{
+  "name": "test-codeql-optimization",
+  "version": "1.0.0",
+  "description": "Test repository for CodeQL optimization",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

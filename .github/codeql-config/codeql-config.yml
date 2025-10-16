@@ -1,0 +1,43 @@
+name: "AppDirect Optimized CodeQL Configuration"
+
+# Use high-precision query suites to reduce false positives
+queries:
+  # Core security queries with high precision
+  - uses: security-extended
+  # Quality queries that catch real issues
+  - uses: security-and-quality
+
+# Exclude paths that commonly generate false positives
+paths-ignore:
+  - "**/*.test.js"
+  - "**/*.test.go"
+  - "**/*_test.go"
+  - "**/test/**"
+  - "**/tests/**"
+  - "**/vendor/**"
+  - "**/node_modules/**"
+  - "**/third_party/**"
+  - "**/generated/**"
+  - "**/*.mock.js"
+  - "**/*.mock.go"
+  - "**/mocks/**"
+  - "**/examples/**"
+  - "**/samples/**"
+  - "**/integration/**"
+  - "**/e2e/**"
+
+# Focus on production code paths
+paths:
+  - "src/"
+  - "lib/"
+  - "app/"
+  - "cmd/"
+  - "internal/"
+  - "pkg/"
+  - "main/"
+  - "service/"
+
+# Performance optimization
+ram: 8192
+threads: 0
+timeout: 900
