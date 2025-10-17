@@ -1,0 +1,24 @@
+name: Test Repository Structure
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Test Git Operations
+      run: |
+        echo "Testing git operations..."
+        git log --oneline -5
+        echo "Repository structure:"
+        ls -la
+        echo "Go files:"
+        find . -name "*.go" -type f
+        echo "JavaScript files:"
+        find . -name "*.js" -type f
