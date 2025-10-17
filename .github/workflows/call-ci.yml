@@ -1,4 +1,4 @@
-name: 'Opinionated'
+name: 'Opinionated CI with Optimized CodeQL'
 
 on:
   pull_request:
@@ -11,5 +11,5 @@ on:
 jobs:
   continuous-integration:
     name: 'Continuous Integration'
-    uses: AppDirect/actions/.github/workflows/opinionated-ci-go.yml@master
+    uses: sroyad/actions/.github/workflows/opinionated-ci-go.yml@main
     secrets: inherit
