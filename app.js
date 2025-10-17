@@ -1,14 +1,34 @@
+// JavaScript test file with intentional vulnerabilities for CodeQL testing
+
 const express = require('express');
 const app = express();
 
-app.get('/search', (req, res) => {
-    // This should be flagged by our high-precision query
-    const userInput = req.query.q;
-    document.write(`<h1>Search results for: ${userInput}</h1>`); // XSS vulnerability
+app.get('/', (req, res) => {
+    // XSS vulnerability - user input directly in response
+    const userInput = req.query.name;
     
-    // This should NOT be flagged (safe constant)
-    const safeContent = "<h1>Welcome</h1>";
-    document.write(safeContent);
+    // VULNERABLE: Direct output without sanitization
+    res.send(`
+        <html>
+            <body>
+                <h1>Hello ${userInput}</h1>
+            </body>
+        </html>
+    `);
 });
 
-app.listen(3000);
+app.get('/search', (req, res) => {
+    // SQL injection vulnerability
+    const searchTerm = req.query.q;
+    
+    // VULNERABLE: Direct string concatenation
+    const query = `SELECT * FROM products WHERE name LIKE '%${searchTerm}%'`;
+    
+    // Simulate database query
+    console.log('Executing query:', query);
+    res.json({ message: 'Search completed' });
+});
+
+app.listen(3000, () => {
+    console.log('Server running on port 3000');
+});

@@ -1,26 +1,50 @@
 package main
 
 import (
-    "database/sql"
-    "fmt"
-    "net/http"
-    _ "github.com/lib/pq"
+	"database/sql"
+	"fmt"
+	"log"
+	"net/http"
+	"os"
 )
 
-func vulnerableHandler(w http.ResponseWriter, r *http.Request) {
-    db, _ := sql.Open("postgres", "user=test dbname=test")
-    
-    // This should be flagged by our high-precision query
-    userInput := r.FormValue("username")
-    query := fmt.Sprintf("SELECT * FROM users WHERE username = '%s'", userInput)
-    db.Query(query) // SQL injection vulnerability
-    
-    // This should NOT be flagged (safe constant)
-    safeQuery := "SELECT * FROM users WHERE active = true"
-    db.Query(safeQuery)
+func main() {
+	// This is a test file with intentional vulnerabilities for CodeQL testing
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func main() {
-    http.HandleFunc("/", vulnerableHandler)
-    http.ListenAndServe(":8080", nil)
+func handler(w http.ResponseWriter, r *http.Request) {
+	// SQL injection vulnerability - user input directly in query
+	userID := r.URL.Query().Get("id")
+	
+	db, err := sql.Open("sqlite3", "test.db")
+	if err != nil {
+		http.Error(w, "Database error", 500)
+		return
+	}
+	defer db.Close()
+	
+	// VULNERABLE: Direct string concatenation with user input
+	query := "SELECT * FROM users WHERE id = " + userID
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, "Query error", 500)
+		return
+	}
+	defer rows.Close()
+	
+	fmt.Fprintf(w, "User data retrieved")
+}
+
+func unsafeFileOperation() {
+	// Another vulnerability - path traversal
+	filename := os.Getenv("USER_INPUT_FILE")
+	
+	// VULNERABLE: No validation of filename
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
 }
