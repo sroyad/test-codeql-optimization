@@ -1,0 +1,22 @@
+name: Minimal Test
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      
+    - name: List files
+      run: |
+        echo "Repository contents:"
+        ls -la
+        echo "Go files:"
+        find . -name "*.go" -type f
+        echo "Go mod:"
+        cat go.mod || echo "No go.mod found"
